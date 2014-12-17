@@ -32,6 +32,7 @@
     go-eldoc
     go-mode
     golint
+    git-gutter
     helm
     helm-ag
 ;;    helm-descbinds
