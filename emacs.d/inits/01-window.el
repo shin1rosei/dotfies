@@ -40,3 +40,6 @@
 
 ;; 折り返しトグル
 (define-key global-map (kbd "C-c l") 'toggle-truncate-lines)
+
+;; 行カーソル
+(global-hl-line-mode t)
