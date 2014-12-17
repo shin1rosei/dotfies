@@ -13,9 +13,14 @@
 
 (defalias 'perl-mode 'cperl-mode)
 
+;; セミコロンで自動改行しない
+
+(setq c-auto-newline nil)
+
 (custom-set-variables
  '(cperl-indent-parens-as-block t)
  '(cperl-close-paren-offset     -4)
+ '(cperl-auto-newline nil)
  '(cperl-indent-subs-specially  nil))
 
 (add-to-list 'auto-mode-alist '("\\.psgi$" . cperl-mode))

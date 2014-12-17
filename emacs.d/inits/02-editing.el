@@ -20,7 +20,7 @@
 ;; electric pair mode
 (electric-pair-mode t)
 ;; visualize whitespaces(tabs)
-(global-whitespace-mode t)
+;; (global-whitespace-mode t)
 (custom-set-faces
  '(whitespace-tab ((((class color) (background dark))
      :background "grey10" :foreground "grey20"))))
