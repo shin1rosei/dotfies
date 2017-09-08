@@ -25,7 +25,7 @@
 (global-set-key (kbd "C-/") 'helm-projectile)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
+;;(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 (define-key helm-command-map (kbd "d") 'helm-descbinds)
 (define-key helm-command-map (kbd "g") 'helm-ag)
 (define-key helm-command-map (kbd "o") 'helm-occur)

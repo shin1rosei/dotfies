@@ -15,12 +15,20 @@
                :description "dmacro mode"
                :type http
                :url "http://www.pitecan.com/papers/JSSSTDmacro/dmacro.el")
+        (:name tomorrow-theme
+               :description "tomorrow-theme"
+               :type http
+               :url "https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/GNU%20Emacs/color-theme-tomorrow.el")
         ))
+
+;;; define tomorrow-theme repository
+
 
 ;; Packages to install from el-get
 (defvar my/el-get-packages
   '(
     dmacro
+    tomorrow-theme
     )
   "A list of packages to install from el-get at launch.")
 

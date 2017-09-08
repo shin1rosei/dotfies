@@ -56,7 +56,7 @@
                         (error   line-start (file-name) ":" line ":" column ":" (any "5")   ":" (message) line-end))
        :modes (cperl-mode perl-mode))
      (add-to-list 'flycheck-checkers 'my-perl)
-     (add-to-list 'flycheck-checkers 'my-perl-perlcritic)
+;;     (add-to-list 'flycheck-checkers 'my-perl-perlcritic)
      ;; key bind
      (define-key cperl-mode-map (kbd "C-m") 'newline-and-indent)
      (define-key cperl-mode-map (kbd "C-c d") 'helm-perldoc)
