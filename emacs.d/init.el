@@ -45,7 +45,7 @@
 ;;    magit
 ;;    markdown-mode
 ;;    open-junk-file
-    perl-completion
+;;    perl-completion
     powerline
     plenv
     recentf-ext
@@ -87,7 +87,7 @@
  '(helm-delete-minibuffer-contents-from-point t)
  '(helm-ff-skip-boring-files t)
  '(helm-split-window-default-side (quote right))
- '(helm-truncate-lines t t)
+ '(helm-truncate-lines t)
  '(indent-tabs-mode nil)
  '(init-loader-show-log-after-init nil)
  '(initial-frame-alist (quote ((alpha . 100))))
@@ -98,7 +98,7 @@
  '(ns-use-native-fullscreen nil)
  '(package-selected-packages
    (quote
-    (helm-projectile helm-perldoc helm-ag helm yascroll yaml-mode smooth-scroll shell-pop recentf-ext projectile powerline plenv perl-completion init-loader golint go-eldoc go-autocomplete git-gutter flycheck exec-path-from-shell deferred color-theme-solarized auto-async-byte-compile async)))
+    (helm-projectile helm-perldoc helm-ag helm yascroll yaml-mode smooth-scroll shell-pop recentf-ext projectile powerline plenv init-loader golint go-eldoc go-autocomplete git-gutter flycheck exec-path-from-shell deferred color-theme-solarized auto-async-byte-compile async)))
  '(read-file-name-completion-ignore-case t)
  '(ruby-deep-indent-paren nil)
  '(scroll-bar-mode nil)

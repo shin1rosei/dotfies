@@ -74,61 +74,6 @@ function alc() {
   fi
 }
 
-#if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]] then
-##  tset -s xterm-256color
-#  keychain --quiet ~/.ssh/keys/*~*.pub
-#  . ~/.keychain/${HOST}-sh
-#fi
-
-# preexec
-
-#if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
-##    chpwd () { echo -n "_`dirs`\\" }
-#   preexec() {
-#        # see [zsh-workers:13180]
-#        # http://www.zsh.org/mla/workers/2000/msg03993.html
-#        emulate -L zsh
-#        local -a cmd; cmd=(${(z)2})
-#        case $cmd[1] in
-#            fg)
-#                if (( $#cmd == 1 )); then
-#                    cmd=(builtin jobs -l %+)
-#                else
-#                    cmd=(builtin jobs -l $cmd[2])
-#                fi
-#                ;;
-#            %*)
-#                cmd=(builtin jobs -l $cmd[1])
-#                ;;
-#            emacsclient)
-#                screen -X eval "select 1"
-#                return
-#                ;;
-#            cd|ssh|rlwrap)
-#                if (( $#cmd >= 2)); then
-#                    cmd[1]=$cmd[2]
-#                fi
-#                ;&
-#            *)
-#                echo -n "k$cmd[1]:t\\"
-#                return
-#                ;;
-#        esac
-#       
-#        local -A jt; jt=(${(kv)jobtexts})
-#       
-#        $cmd >>(read num rest
-#            cmd=(${(z)${(e):-\$jt$num}})
-#        echo -n "k$cmd[1]:t\\") 2>/dev/null
-#    }
-#
-#    chpwd () {
-#       
-#    }
-#
-#chpwd
-#fi
-
 case "${OSTYPE}" in
     freebsd*|darwin*)
         alias ls="ls -G -w"
@@ -145,10 +90,6 @@ if [ $TERM = 'screen-256color' ]; then
     }
     alias ssh=ssh_tmux
 fi
-
-alias emacs='open -a /Applications/Emacs.app'
-alias e=emacs
-alias qr="php -r 'echo \"http://chart.apis.google.com/chart?chs=150x150&cht=qr&chl=\".urlencode($argv[1]);' '$@' | xargs wget"
 
 [[ $EMACS = t ]] && unsetopt zle
 
@@ -167,23 +108,11 @@ export PATH=$PATH:$AWS_RDS_HOME/bin
 
 export AWS_CREDENTIAL_FILE=$AWS_RDS_HOME/credential-file-path.txt
 JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home
-export JAVA_HOME
-PATH=${JAVA_HOME}/bin:$PATH
 export EC2_CERT=/Users/sei/bin/ec2/key/cert-DRMW22QEKV3K4T3D6VVTEEBJVUHIKGV6.pem
 export EC2_PRIVATE_KEY=/Users/sei/bin/ec2/key/pk-DRMW22QEKV3K4T3D6VVTEEBJVUHIKGV6.pem
 
 # Android Setting
 PATH=$HOME/android-sdk/tools:$PATH
-
-#
-# cdd
-#
-source ~/.zsh/cdd
-
-#
-# perlbrew
-#
-#source ~/perl5/perlbrew/etc/bashrc
 
 #
 # npm
@@ -211,27 +140,6 @@ if is-at-least 4.3.10; then
   zstyle ':vcs_info:git:*' actionformats '(%s)-[%c%u%b|%a]'
 fi
 
-plenv_perl_version() {
-    local dir=$PWD
-
-    [[ -n $PLENV_VERSION ]] && { echo $PLENV_VERSION; return }
-
-    while [[ -n $dir && $dir != "/" && $dir != "." ]]; do
-        if [[ -f "$dir/.perl-version" ]]; then
-            head -n 1 "$dir/.perl-version"
-            return
-        fi
-        dir=$dir:h
-    done
-
-    local plenv_home=$PLENV_HOME
-    [[ -z $PLENV_HOME && -n $HOME ]] && plenv_home="$HOME/.plenv"
-
-    if [[ -f "$plenv_home/version" ]]; then
-        head -n 1 "$plenv_home/version"
-    fi
-}
-
 precmd() {
     psvar=()
     LANG=en_US.UTF-8 vcs_info
@@ -239,11 +147,7 @@ precmd() {
 }
 
 
-PROMPT=$'%2F%n@%m%f %3F%~%5F%1v%f%2F [plenv:$(plenv_perl_version)]%f\n%# '
-
-#if [ $SHLVL = 1 ];then
-#    screen -xR
-#fi
+PROMPT=$'%2F%n@%m%f %3F%~%5F%1v%f%2F %f\n%# '
 
 #
 # rvm
@@ -280,21 +184,18 @@ if [ -d ${HOME}/.plenv  ] ; then
 fi
 
 #
+# rbenv
+#
+if [ -d ${HOME}/.rbenv ] ; then
+  eval "$(rbenv init -)"
+fi
+
+#
 # zsh-completion
 #
 
 REPORTTIME=3
 if which plenv > /dev/null; then eval "$(plenv init -)"; fi
-
-#
-# hub
-#
-function git(){hub "$@"} # zsh
-
-#
-# gh
-#
-eval "$(gh alias -s)"
 
 #
 # go
@@ -305,3 +206,81 @@ if [ -x "`which go`" ]; then
   export GOPATH=$HOME/.go
   export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 fi
+
+#
+# peco
+#
+# peco settings
+# 過去に実行したコマンドを選択。ctrl-rにバインド
+function peco-select-history() {
+  BUFFER=$(\history -n -r 1 | peco --query "$LBUFFER")
+  CURSOR=$#BUFFER
+  zle clear-screen
+}
+zle -N peco-select-history
+bindkey '^r' peco-select-history
+
+# search a destination from cdr list
+function peco-get-destination-from-cdr() {
+  cdr -l | \
+  sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
+  peco --query "$LBUFFER"
+}
+
+
+### 過去に移動したことのあるディレクトリを選択。ctrl-iにバインド
+function peco-cdr() {
+  local destination="$(peco-get-destination-from-cdr)"
+  if [ -n "$destination" ]; then
+    BUFFER="cd $destination"
+    zle accept-line
+  else
+    zle reset-prompt
+  fi
+}
+zle -N peco-cdr
+#bindkey '^E' peco-cdr
+
+# ブランチを簡単切り替え。git checkout lbで実行できる
+alias -g lb='`git branch | peco --prompt "GIT BRANCH>" | head -n 1 | sed -e "s/^\*\s*//g"`'
+
+
+# dockerコンテナに入る。deで実行できる
+alias de='docker exec -it $(docker ps | peco | cut -d " " -f 1) /bin/bash'
+
+function peco-src () {
+  local selected_dir=$(ghq list -p | peco --query "$LBUFFER")
+  if [ -n "$selected_dir" ]; then
+    BUFFER="cd ${selected_dir}"
+    zle accept-line
+  fi
+  zle clear-screen
+}
+zle -N peco-src
+bindkey '^]' peco-src
+
+#
+# flutter
+#
+export PATH="$PATH:$HOME/dev/flutter/bin"
+
+#
+# JAVA_HOME
+#
+export PATH="/usr/local/opt/openjdk/bin:$PATH"
+export JAVA_HOME=`/usr/libexec/java_home -v 11.0.8`
+
+#
+# nodenv
+#
+eval "$(nodenv init -)"
+
+#
+# bash_completion
+#
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  source $(brew --prefix)/etc/bash_completion
+fi
+
+source /usr/local/etc/bash_completion.d/tig-completion.bash
+
